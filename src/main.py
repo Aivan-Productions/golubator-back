@@ -1,8 +1,8 @@
-from hashlib import algorithms_available
-from typing import List
 from random import choice
 import jwt
 import datetime
+from dotenv import load_dotenv
+import os
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
@@ -10,13 +10,14 @@ from pydantic import BaseModel, Field
 
 app = FastAPI()
 
-SECRET_KEY = 'secret key'
+load_dotenv()
+SECRET_KEY = os.getenv('SECRET_KEY')
 
-# типо BD
+# use as a DB for now
 data = {}
-# хэш таблица, в котором хранятся валидные токены. {jwt: emoji}
+# save valid JWT. {jwt: emoji}
 jwt_to_emoji = {}
-# доступные эмодзи
+# available emojis
 emojis = {'🤢', '😍', '👽', '🥸', '🥳', '🐵'}
 
 
@@ -26,12 +27,10 @@ class MessageScheme(BaseModel):
 
 
 def create_jwt(data: dict) -> str:
-    """Генерируем JWT"""
     return jwt.encode(data, SECRET_KEY, algorithm="HS256")
 
 
-def validate_jwt(token: str):
-    """Просто проверка, что jwt есть в jwt_to_emoji и пользователь может отправлять сообщения, используя его"""
+def validate_jwt(token: str) -> bool:
     return token in jwt_to_emoji
 
 
@@ -41,7 +40,6 @@ def validate_jwt(token: str):
     tags=["Chat"]
 )
 def get_messages(chat_slug: str):
-    """Получаем все сообщения из чата с определенным slug"""
     if chat_slug in data:
         return data[chat_slug]
     else:
@@ -54,15 +52,15 @@ def get_messages(chat_slug: str):
     tags=["Chat"]
 )
 def post_message(chat_slug: str, message: MessageScheme):
-    # Создаем чат(комнату) если его не было
+    # Create a chat if it doesn't exist
     if chat_slug not in data:
         data[chat_slug] = []
 
-    # Валидация jwt
+    # Validate jwt
     if not validate_jwt(message.jwt):
         return HTTPException(status_code=404, detail={'msg': 'Incorrect JWT'})
 
-    # Добавляем сообщение в чат
+    # Add message to the chat
     data[chat_slug].append({
         'jwt': message.jwt,
         'text': message.text,
@@ -75,12 +73,11 @@ def post_message(chat_slug: str, message: MessageScheme):
 
 @app.get(
     "/login/",
-    summary="Login",
+    summary="User authorization",
     tags=["Chat"]
 )
 def login():
-    """авторизация пользователя. Выдается личный JWT"""
-    # получаем рандомно emoji (если еще остались) из emojis. Иначе возвращаем нет доступа
+    # get random emoji (if there is), else return exception
     if emojis:
         emoji = choice(list(emojis))
         emojis.remove(emoji)
@@ -98,10 +95,7 @@ def login():
     tags=['Chat'],
 )
 def check_token(token: str):
-    """Проверка валидности токена"""
     if validate_jwt(token):
         return {'ok': True, 'msg': 'Correct JWT'}
     else:
         return HTTPException(status_code=404, detail={'msg': 'Incorrect JWT'})
-
-
