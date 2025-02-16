@@ -1,4 +1,15 @@
 
+# Develop
+
 ```bash
-docker build -t golubator-back . && docker run --rm golubator-back
+poetry install
+poetry run pre-commit install
 ```
+
+# Run
+
+```bash
+docker compose up -d
+```
+
+
