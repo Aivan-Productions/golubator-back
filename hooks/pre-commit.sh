@@ -12,7 +12,7 @@ if ! poetry self show plugins | grep -q 'poetry-plugin-export'; then
     exit 1
 fi
 
-if ! git diff --quiet HEAD^ HEAD -- pyproject.toml; then
+if ! git diff --quiet HEAD^ HEAD -- pyproject.toml requirements.txt; then
 	echo "Generating requirements.txt..."
 	poetry export -f requirements.txt --output requirements.txt &> /dev/null
 	git add .
