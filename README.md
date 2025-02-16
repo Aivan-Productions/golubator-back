@@ -1,3 +1,4 @@
-```python4
-poetry run uvicorn src.main:app --reload
+
+```bash
+docker build -t golubator-back . && docker run --rm golubator-back
 ```
