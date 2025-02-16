@@ -1,7 +1,6 @@
 from hashlib import algorithms_available
 from typing import List
 from random import choice
-import uvicorn
 import jwt
 import datetime
 
@@ -105,5 +104,4 @@ def check_token(token: str):
     else:
         return HTTPException(status_code=404, detail={'msg': 'Incorrect JWT'})
 
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+
