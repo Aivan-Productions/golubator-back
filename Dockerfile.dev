@@ -6,6 +6,6 @@ COPY requirements.txt .
 
 RUN pip install -r requirements.txt
 
-CMD ["python", "src/_dev.py"]
+CMD ["python", "-OO", "src/_dev.py"]
 
 EXPOSE 8000
