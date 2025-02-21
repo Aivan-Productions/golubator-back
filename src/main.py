@@ -11,7 +11,7 @@ from pydantic import BaseModel, Field
 app = FastAPI()
 
 load_dotenv()
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY_JWT = os.getenv('SECRET_KEY_JWT')
 
 # use as a DB for now
 data = {}
@@ -27,7 +27,7 @@ class MessageScheme(BaseModel):
 
 
 def create_jwt(data: dict) -> str:
-    return jwt.encode(data, SECRET_KEY, algorithm="HS256")
+    return jwt.encode(data, SECRET_KEY_JWT, algorithm="HS256")
 
 
 def validate_jwt(token: str) -> bool:
