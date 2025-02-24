@@ -1,7 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from datetime import datetime
-
-from database import data
+from database import insert_message, data, get_all_messages
 from utils import validate_jwt
 from schemes import MessageScheme
 
@@ -9,32 +8,25 @@ router = APIRouter(prefix="/chats", tags=["Chats"])
 
 
 @router.get(
-    "/{chat_slug}/",
+    "/main/",
     summary="Get message from chat by chat_slub",
 )
-def get_messages(chat_slug: str):
-    if chat_slug in data:
-        return data[chat_slug]
-    else:
-        return HTTPException(status_code=404, detail={'msg': 'The chat was not found'})
+def get_messages():
+    return get_all_messages()
 
 
 @router.post(
-    "/{chat_slug}/",
+    "/main/",
     summary="Post message in a chat",
 )
-def post_message(chat_slug: str, message: MessageScheme):
-    # Create a chat if it doesn't exist
-    if chat_slug not in data:
-        data[chat_slug] = []
-
+def post_message(message: MessageScheme):
     # Validate jwt
     emoji = validate_jwt(message.jwt)
     if not emoji:
         return HTTPException(status_code=404, detail={'msg': 'Incorrect JWT'})
 
     # Add message to the chat
-    data[chat_slug].append({
+    insert_message({
         'text': message.text,
         'emoji': emoji['emoji'],
         'timestamp': datetime.now()
