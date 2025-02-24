@@ -2,7 +2,7 @@ from random import choice
 from fastapi import APIRouter, HTTPException
 
 from utils import create_jwt, validate_jwt
-from database import jwt_to_emoji, emojis
+from database import emojis
 
 
 router = APIRouter(prefix="/login", tags=["Login"])
@@ -21,7 +21,6 @@ def login():
         return HTTPException(status_code=404, detail={'msg': 'The limit of participants in the chat has been exceeded'})
 
     token = create_jwt({'emoji': emoji})
-    jwt_to_emoji[token] = emoji
 
     return {'token': token}
 

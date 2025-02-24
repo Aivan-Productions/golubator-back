@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from datetime import datetime
 
-from database import data, jwt_to_emoji
+from database import data
 from utils import validate_jwt
 from schemes import MessageScheme
 
@@ -21,7 +21,7 @@ def get_messages(chat_slug: str):
 
 @router.post(
     "/{chat_slug}/",
-    summary="Post message in chat",
+    summary="Post message in a chat",
 )
 def post_message(chat_slug: str, message: MessageScheme):
     # Create a chat if it doesn't exist
@@ -29,14 +29,14 @@ def post_message(chat_slug: str, message: MessageScheme):
         data[chat_slug] = []
 
     # Validate jwt
-    if not validate_jwt(message.jwt):
+    emoji = validate_jwt(message.jwt)
+    if not emoji:
         return HTTPException(status_code=404, detail={'msg': 'Incorrect JWT'})
 
     # Add message to the chat
     data[chat_slug].append({
-        'jwt': message.jwt,
         'text': message.text,
-        'emoji': jwt_to_emoji[message.jwt],
+        'emoji': emoji['emoji'],
         'timestamp': datetime.now()
     })
 
