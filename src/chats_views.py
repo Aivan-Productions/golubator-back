@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from datetime import datetime
-from database import insert_message, data, get_all_messages
+from database import insert_message, get_all_messages
 from utils import validate_jwt
 from schemes import MessageScheme
 
