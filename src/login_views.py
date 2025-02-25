@@ -29,7 +29,8 @@ def login():
     summary='Check that the token is valid and can be used',
 )
 def check_token(token: str):
-    if validate_jwt(token):
-        return {'ok': True, 'msg': 'Correct JWT'}
+    data = validate_jwt(token)
+    if data:
+        return {'ok': True, 'msg': 'Correct JWT', 'emoji': data['emoji']}
     else:
         return HTTPException(status_code=404, detail={'msg': 'Incorrect JWT'})
