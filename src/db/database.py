@@ -13,17 +13,15 @@ class MongoDB:
         print("Connected to MongoDB")
 
     async def close(self):
-        """Закрытие соединения с MongoDB."""
         if self.client:
             self.client.close()
             print("Closed MongoDB connection")
 
     def get_collection(self, collection_name: str):
-        """Получить коллекцию из базы данных."""
         if self.db is not None:
             return self.db[collection_name]
         else:
             raise Exception("Database not connected")
 
-# Создаем экземпляр класса для использования в приложении
+
 mongodb = MongoDB()
