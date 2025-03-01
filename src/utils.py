@@ -1,5 +1,6 @@
 import jwt
 from config import settings
+from random import choice
 
 
 def create_jwt(data: dict) -> str:
@@ -15,3 +16,8 @@ def validate_jwt(token: str) -> bool:
         print('Invalid token')
 
     return None
+
+
+def get_random_emoji() -> str:
+    emojis = ['🤢', '😍', '👽', '🥸', '🥳', '🐵']
+    return choice(emojis)
