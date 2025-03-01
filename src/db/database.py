@@ -20,9 +20,10 @@ class MongoDB:
 
     def get_collection(self, collection_name: str):
         """Получить коллекцию из базы данных."""
-        # if not self.db:
-        #     raise Exception("Database not connected")
-        return self.db[collection_name]
+        if self.db is not None:
+            return self.db[collection_name]
+        else:
+            raise Exception("Database not connected")
 
 # Создаем экземпляр класса для использования в приложении
 mongodb = MongoDB()
