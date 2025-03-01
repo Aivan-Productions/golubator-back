@@ -1,17 +1,20 @@
-from random import choice
-import jwt
-from dotenv import load_dotenv
-import os
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
-from fastapi import FastAPI, HTTPException
-
-from chats_views import router as chats_router
-from login_views import router as login_router
+from api.routers import all_routers
 
 
 app = FastAPI()
-app.include_router(chats_router)
-app.include_router(login_router)
 
-load_dotenv()
-SECRET_KEY_JWT = os.getenv('SECRET_KEY_JWT')
+
+for router in all_routers:
+    app.include_router(router)
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"], 
+)

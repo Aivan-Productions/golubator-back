@@ -1,32 +1,38 @@
 from fastapi import APIRouter, HTTPException
 from datetime import datetime
-from database import insert_message, get_all_messages
+from services.messages import MessagesService
 from utils import validate_jwt
-from schemes import MessageScheme
+from schemas.messages import MessageSchemaAdd
 
-router = APIRouter(prefix="/chats", tags=["Chats"])
+
+router = APIRouter(
+    prefix="/messages",
+    tags=["Messages"])
 
 
 @router.get(
-    "/main/",
+    "",
     summary="Get message from chat by chat_slub",
 )
-def get_messages():
-    return get_all_messages()
+async def get_messages():
+    return await MessagesService().get_all_messages()
 
 
 @router.post(
-    "/main/",
+    "",
     summary="Post message in a chat",
 )
-def post_message(message: MessageScheme):
+async def post_message(
+    message: MessageSchemaAdd
+):
     # Validate jwt
     emoji = validate_jwt(message.jwt)
+    
     if not emoji:
         return HTTPException(status_code=404, detail={'msg': 'Incorrect JWT'})
 
     # Add message to the chat
-    insert_message({
+    await MessagesService().add_message({
         'text': message.text,
         'emoji': emoji['emoji'],
         'timestamp': datetime.now()
