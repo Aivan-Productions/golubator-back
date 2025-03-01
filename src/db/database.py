@@ -1,15 +1,28 @@
-import os
-from dotenv import load_dotenv
 from motor.motor_asyncio import AsyncIOMotorClient
+from config import settings
 
+class MongoDB:
+    def __init__(self):
+        self.client = None
+        self.db = None
 
-load_dotenv()
+    async def connect(self):
+        uri = f"mongodb://{settings.MONGO_USERNAME}:{settings.MONGO_PASSWORD}@localhost:27017"
+        self.client = AsyncIOMotorClient(uri)
+        self.db = self.client[settings.MONGO_DB_NAME]
+        print("Connected to MongoDB")
 
-MONGO_INITDB_ROOT_USERNAME=os.getenv("MONGO_INITDB_ROOT_USERNAME")
-MONGO_INITDB_ROOT_PASSWORD=os.getenv("MONGO_INITDB_ROOT_PASSWORD")
+    async def close(self):
+        """Закрытие соединения с MongoDB."""
+        if self.client:
+            self.client.close()
+            print("Closed MongoDB connection")
 
+    def get_collection(self, collection_name: str):
+        """Получить коллекцию из базы данных."""
+        # if not self.db:
+        #     raise Exception("Database not connected")
+        return self.db[collection_name]
 
-url = f"mongodb://{MONGO_INITDB_ROOT_USERNAME}:{MONGO_INITDB_ROOT_PASSWORD}@localhost:27017"
-client = AsyncIOMotorClient(url)
-
-db = client['mydb']
+# Создаем экземпляр класса для использования в приложении
+mongodb = MongoDB()
