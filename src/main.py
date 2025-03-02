@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi_pagination import add_pagination
 from fastapi.middleware.cors import CORSMiddleware
 from db.database import mongodb
 
@@ -6,6 +7,7 @@ from api.routers import all_routers
 
 
 app = FastAPI()
+add_pagination(app)
 
 
 for router in all_routers:

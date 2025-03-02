@@ -7,7 +7,7 @@ class MongoDB:
         self.db = None
 
     async def connect(self):
-        uri = f"mongodb://{settings.MONGO_USERNAME}:{settings.MONGO_PASSWORD}@localhost:27017"
+        uri = f"mongodb://{settings.MONGO_USERNAME}:{settings.MONGO_PASSWORD}@mongo:27017"
         self.client = AsyncIOMotorClient(uri)
         self.db = self.client[settings.MONGO_DB_NAME]
         print("Connected to MongoDB")
