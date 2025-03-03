@@ -16,6 +16,9 @@ uvicorn = "^0.34.0"
 python-dotenv = "^1.0.1"
 pymongo = "^4.11.1"
 motor = "^3.7.0"
+pydantic-settings = "^2.8.1"
+fastapi-pagination = "^0.12.34"
+loguru = "^0.7.3"
 
 [tool.poetry.group.dev.dependencies]
 poetry-plugin-export = "^1.9.0"

@@ -1,4 +1,5 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException 
+from fastapi_pagination import Page, paginate
 from datetime import datetime
 from services.messages import MessagesService
 from utils import validate_jwt
@@ -14,8 +15,9 @@ router = APIRouter(
     "",
     summary="Get message from chat by chat_slub",
 )
-async def get_messages():
-    return await MessagesService().get_all_messages()
+async def get_messages() -> Page[dict]:
+    messages = await MessagesService().get_all_messages()
+    return paginate(messages)
 
 
 @router.post(
